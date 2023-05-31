@@ -1,0 +1,84 @@
+<!-- Main Panel Title-->
+<div class="flex mb-4 items-center" *ngIf="!isEditPanelOpen">
+    <div class="grow">
+        <span class="font-medium text-slate-500 text-[13px]">Relationships</span>
+    </div>
+    <div *ngIf="filter.length <= 0">
+        <button class="flex items-center" (click)="addNewFilter()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <div *ngIf="filter.length > 0">
+        <button (click)="isExpanded = !isExpanded">
+            <mat-icon>{{ isExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
+    </div>
+</div>
+
+<!-- Expanded Panel -->
+<div *ngIf="!isEditPanelOpen && isExpanded">
+    <div class="" *ngFor="let filterBlock of filter; let isLast= last; let blockIndex= index">
+        <div class="border border-solid filter-clauses cursor-pointer"
+            *ngFor="let filterItem of filterBlock;let filterIndex=index">
+            <div class="flex items-center">
+                <div class="grow" (click)="openEditPanel(filterItem, blockIndex, filterIndex)">
+                    <span class="text-orange-400">{{filterItem.relationship_id }} </span>
+                    <span *ngIf="filterItem.operator">{{filterItem.operator.label}} </span>
+                    <span *ngIf="filterItem.value">{{filterItem.value}} </span>
+                </div>
+                <button mat-button class="icon-button delete" (click)="deleteFilterItem(blockIndex, filterIndex)">
+                    <mat-icon svgIcon="mat_outline:delete_outline"></mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="mt-2">
+            <button mat-button color="primary" class="link-button" (click)="addNewFilter(blockIndex)">AND</button>
+            <button mat-button color="primary" class="link-button" *ngIf="isLast" (click)="addNewFilter()">OR</button>
+        </div>
+
+        <p class="or-divider" *ngIf="!isLast">
+            <span>OR</span>
+        </p>
+    </div>
+</div>
+
+<!-- Form Panel -->
+<div *ngIf="isEditPanelOpen">
+    <div class="mb-[8px]">
+        <button mat-button class="panel-back-arrow" (click)="closePanel()">
+            <mat-icon svgIcon="mat_outline:arrow_back"></mat-icon>
+        </button>
+    </div>
+
+    <div>
+        <div class="uppercase text-xs mb-1">Select Relationship</div>
+        <mat-form-field appearance="fill" class="w-full thin-form-control">
+            <!-- (selectionChange)="valueSelected(true)" -->
+            <mat-select [(ngModel)]="form.relationship_id" placeholder="Select Relationship">
+                <mat-option *ngFor="let option of filterOptions; let i = index" [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div *ngIf="form.relationship_id !== ''">
+        <mat-form-field appearance="fill" class="w-full thin-form-control">
+            <mat-select [(ngModel)]="form.operator" placeholder="Select Operator">
+                <mat-option *ngFor="let option of operatorOptions" [value]="option">
+                    {{ option.label }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div *ngIf="form.operator.value == 'exists'">
+        <button mat-stroked-button color="primary" class="w-full border-2 add-sku-button mb-[16px]"
+            (click)="openSkuSelectorModal(false)">
+            All SKUs Selected
+        </button>
+    </div>
+    <button mat-raised-button color="primary" class="w-full font-12px" [disabled]="form.relationship_id === ''"
+        (click)="applyColumnFilter(true)">
+        Apply Filter
+    </button>
+</div>

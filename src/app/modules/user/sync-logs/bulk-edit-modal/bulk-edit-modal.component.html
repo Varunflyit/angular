@@ -1,0 +1,64 @@
+<div class="border-b min-h-[76px] flex items-center justify-between px-[40px]">
+    <div class="flex flex-col">
+        <h2 mat-dialog-title class="text-ellipsis modal-title">Bulk Edit</h2>
+        <span class="sub-title">{{ data.selected.length }} product selected</span>
+    </div>
+    <div class="flex items-center justify-center">
+        <button mat-stroked-button color="primary" class="cancel-button" (click)="closeDialog()">
+            Cancel
+        </button>
+        <button mat-raised-button color="primary" id="attribute-save" class="save-button"
+            *ngIf="activeTab == 'attribute'" (click)="submitAttributeForm(attributeForm.attributeFormList)"> Save
+        </button>
+        <button mat-raised-button color="primary" id="category-save" class="save-button"
+            *ngIf="activeTab == 'category'"> Save </button>
+        <button mat-raised-button color="primary" id="relationship-next" class="save-button"
+            *ngIf="activeTab == 'relationship' && relationshipForm.showProductTable == false"
+            (click)="relationshipForm.next()"> Next </button>
+        <button mat-raised-button color="primary"
+            *ngIf="activeTab == 'relationship' && relationshipForm.showProductTable == true" id="relationship-save"
+            class="save-button" (click)="submitRelationshipForm(relationshipForm)"> Save </button>
+        <button mat-raised-button color="primary" id="find-replace-save" class="save-button"
+            *ngIf="activeTab == 'findReplace'" (click)="submitFindReplaceForm(findReplaceForm.findReplaceForm)"> Replace
+            all </button>
+    </div>
+</div>
+<div mat-dialog-content class="modal-body">
+    <div class="w-[85%] mx-auto">
+        <div class="flex items-center justify-between mb-[24px]" *ngIf="relationshipForm.showProductTable == false">
+            <mat-button-toggle-group name="tab"
+                class="border-2 border-solid border-slate-300 custom-button-group shrink-0" [(ngModel)]="activeTab">
+                <mat-button-toggle value="attribute">Attribute</mat-button-toggle>
+                <mat-button-toggle value="category">Categories</mat-button-toggle>
+                <mat-button-toggle value="relationship">Relationships</mat-button-toggle>
+                <mat-button-toggle value="findReplace">Find & Replace</mat-button-toggle>
+            </mat-button-toggle-group>
+            <div class="flex items-center" *ngIf="activeTab == 'attribute'">
+                <span class="text-[12px] text-slate-500">Edit up to 3 attributes</span>
+                <button mat-button class="text-[12px] text-primary"
+                    [disabled]="attributeForm.attributeFormList.length >= 3"
+                    (click)="attributeForm.addNewAttributeForm()">
+                    <mat-icon svgIcon="mat_outline:add" class="text-primary mr-2"></mat-icon>
+                    Edit other attribute
+                </button>
+            </div>
+        </div>
+
+        <!-- Attribute Tab -->
+        <eco-bulk-attributes #attributeForm [attributeList]="attributeList"
+            [ngClass]="{ 'hidden': activeTab != 'attribute' }"></eco-bulk-attributes>
+
+
+        <!-- Category Tab -->
+        <eco-bulk-categories #categoryForm [ngClass]="{'hidden': activeTab != 'category'}"></eco-bulk-categories>
+
+        <!-- Relationship Tab -->
+        <eco-bulk-relationships #relationshipForm [ngClass]="{'hidden': activeTab != 'relationship'}">
+        </eco-bulk-relationships>
+
+        <!-- Find & Replace Tab -->
+        <eco-bulk-find-replace #findReplaceForm [ngClass]="{ 'hidden' : activeTab != 'findReplace'}"
+            [attributeList]="attributeList"></eco-bulk-find-replace>
+
+    </div>
+</div>

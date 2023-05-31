@@ -1,0 +1,187 @@
+<div
+    class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent border border-gray-300 m-9 rounded-md">
+    <!-- Header -->
+    <div
+        class="relative flex flex-col items-center sm:flex-row flex-0 sm:items-center sm:justify-between p-5 md:p-5 border-b">
+        <!-- Loader -->
+        <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="flex flex-col">
+            <div class="text-4xl font-bold tracking-tight">Integration Status</div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+        <!-- Integration Status list -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="integrationStatusResponse$ | async as gridData">
+                <ng-container *ngIf="gridData.length > 0; else noIntegrationStatus">
+                    <div class="grid">
+                        <!-- Header -->
+                        <div class="dashboard-integration-status-grid z-10 sticky top-0 grid px-6 md:px-5 shadow text-md font-semibold text-secondary dark:bg-black dark:bg-opacity-5 bg-white"
+                            matSort matSortDisableClear>
+                            <div class="md:block py-4 border-r"></div>
+                            <div class="pt-6 pb-4 border-r text-center">Active</div>
+                            <div class="pt-6 pb-4 border-r text-center">Status</div>
+
+                            <div class="border-r text-center">
+                                <div class="border-b py-2">Orders Synced</div>
+                                <div class="grid grid-cols-3 gap-1">
+                                    <div class="border-r py-2 text-slate-700">7 days</div>
+                                    <div class="border-r py-2 text-slate-700">14 days</div>
+                                    <div class="py-2 text-slate-700">30 days</div>
+                                </div>
+                            </div>
+
+                            <div class="border-r text-center">
+                                <div class="py-2 border-b">Order $ Value</div>
+                                <div class="grid grid-cols-3 gap-1">
+                                    <div class="border-r py-2 text-slate-700">7 days</div>
+                                    <div class="border-r py-2 text-slate-700">14 days</div>
+                                    <div class="py-2 text-slate-700">30 days</div>
+                                </div>
+                            </div>
+                            <div class="border-r text-center">
+                                <div class="py-2 border-b">% Order Value</div>
+                                <div class="grid grid-cols-3 gap-1">
+                                    <div class="border-r py-2 text-slate-700">7 days</div>
+                                    <div class="border-r py-2 text-slate-700">14 days</div>
+                                    <div class="py-2 text-slate-700">30 days</div>
+                                </div>
+                            </div>
+                            <div class="border-r text-center">
+                                <div class="py-2 border-b">Tracking Synced</div>
+                                <div class="grid grid-cols-3 gap-1">
+                                    <div class="border-r py-2 text-slate-700">7 days</div>
+                                    <div class="border-r py-2 text-slate-700">14 days</div>
+                                    <div class="py-2 text-slate-700">30 days</div>
+                                </div>
+                            </div>
+                            <div class="pt-6 pb-4 border-r text-center">Active Tracking Errors</div>
+                            <div class="pt-6 pb-4 border-r text-center">Products Active</div>
+                            <div class="pt-6 pb-4 text-center">Active Product Errors</div>
+                        </div>
+                        <!-- Rows -->
+
+                        <ng-container *ngFor="let rowItem of gridData; trackBy: trackByFn">
+                            <div
+                                class="dashboard-integration-status-grid integartion-list grid justify-center px-6 md:px-5 shadow-sm">
+                                <div class="border-r py-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-shrink-0">
+                                            <img class="w-10 h-10 rounded-full border" [src]="rowItem.integration.logo"
+                                                alt="Source Icon" />
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-gray-900 truncate dark:text-white">
+                                                {{ rowItem.integration.name }}
+                                            </p>
+                                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                {{ 'TBD - Instance Name' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex border-r justify-center items-center">
+                                    <span class="badge"
+                                        [ngClass]="{ 'badge-success': rowItem?.active_status, 'badge-error': !rowItem?.active_status }">
+                                        {{ rowItem.active_status ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </div>
+
+                                <div class="flex justify-center border-r items-center">
+                                    <span class="badge" [ngClass]="{
+                                        'badge-success': rowItem.status == 'Active',
+                                        'badge-warning': rowItem.status == 'Inactive',
+                                        'badge-error': rowItem.status === 'Error'
+                                        }">
+                                        {{ rowItem.status }}
+                                    </span>
+                                </div>
+                                <div class="border-r text-center">
+                                    <div class="grid grid-cols-3 gap-1">
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.orders.synced['7_days'] }}
+                                        </div>
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.orders.synced['14_days'] }}
+                                        </div>
+                                        <div class="py-4">
+                                            {{ rowItem.orders.synced['30_days'] }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r text-center">
+                                    <div class="grid grid-cols-3 gap-1">
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.orders.order_value['7_days'] }}
+                                        </div>
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.orders.order_value['14_days'] }}
+                                        </div>
+                                        <div class="py-4">
+                                            {{ rowItem.orders.order_value['30_days'] }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r text-center">
+                                    <div class="grid grid-cols-3 gap-1">
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.orders.percent_order_value['7_days'] }}
+                                        </div>
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.orders.percent_order_value['14_days'] }}
+                                        </div>
+                                        <div class="py-4">
+                                            {{ rowItem.orders.percent_order_value['30_days'] }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-r text-center">
+                                    <div class="grid grid-cols-3 gap-1">
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.trackings.synced['7_days'] }}
+                                        </div>
+                                        <div class="border-r border-white py-4">
+                                            {{ rowItem.trackings.synced['14_days'] }}
+                                        </div>
+                                        <div class="py-4">
+                                            {{ rowItem.trackings.synced['30_days'] }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="border-r pt-5 pb-4 text-center">
+                                    {{ rowItem.trackings.errors }}
+                                </div>
+
+                                <div class="border-r pt-5 pb-4 text-center">
+                                    {{ rowItem.trackings.errors }}
+                                </div>
+                                <div class="pt-5 pb-4 text-center">
+                                    {{ rowItem.trackings.errors }}
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <mat-paginator
+                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{ 'pointer-events-none': isLoading }" [length]="pagination?.length"
+                        [pageIndex]="pagination?.page - 1" [pageSize]="pagination?.size"
+                        [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true"></mat-paginator>
+                </ng-container>
+            </ng-container>
+
+            <ng-template #noIntegrationStatus>
+                <div class="p-8 sm:p-16 border-t text-gray-400 text-xl tracking-tight text-center font-medium italic ng-tns-c234-28 ng-star-inserted">
+                    You don't have any integrations configured.
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

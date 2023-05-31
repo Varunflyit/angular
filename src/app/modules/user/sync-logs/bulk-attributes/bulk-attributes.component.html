@@ -1,0 +1,80 @@
+<div>
+    <div class="attribute-box bg-accent-50" *ngFor="let attributeForm of attributeFormList; let i = index">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-[12px] uppercase text-slate-500 font-medium">attribute</span>
+            <button mat-icon-button (click)="deleteAttributeForm(i)">
+                <mat-icon svgIcon="mat_outline:close"></mat-icon>
+            </button>
+        </div>
+        <div class="flex items-center mb-[16px]">
+            <mat-select class="p-2 border rounded-md mr-[24px] w-[432px] bg-white font-12px flex h-[40px]"
+                [(ngModel)]="attributeForm.attribute" (ngModelChange)="attributeForm.value = null;"
+                placeholder="Select Attribute">
+                <input [(ngModel)]="AF_AT_searchQuery" class="p-3 border-b w-full mb-2 sticky top-0 bg-white z-50"
+                    placeholder="Search...">
+                <mat-option [value]="attribute"
+                    *ngFor="let attribute of attributeList | search:'label':AF_AT_searchQuery:'I'">
+                    {{attribute.label}} <span class="text-slate-500" *ngIf="attribute.type">({{attribute.type}})</span>
+                </mat-option>
+            </mat-select>
+            <mat-checkbox color="primary" class="text-[12px]" *ngIf="attributeForm.attribute"
+                [(ngModel)]="attributeForm.leaveEmpty"> Erase
+                content and leave empty </mat-checkbox>
+        </div>
+        <div *ngIf="attributeForm.attribute && attributeForm.leaveEmpty == false">
+            <div class="w-[80%] border-b mb-[16px]"></div>
+            <div class="w-[80%]">
+
+                <!-- TextAttribute -->
+                <mat-form-field class="w-full compact-input"
+                    *ngIf="attributeForm.attribute.type == productAttributeTypes.short_text">
+                    <input matInput [(ngModel)]="attributeForm.value" placeholder="Enter Text" #input />
+                </mat-form-field>
+
+                <!-- DateAttribute -->
+                <mat-form-field class="w-full compact-input" color="primary"
+                    *ngIf="attributeForm.attribute.type == productAttributeTypes.date">
+                    <input matInput [matDatepicker]="dp" [(ngModel)]="attributeForm.value" placeholder="Select Date">
+                    <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker #dp color="primary"></mat-datepicker>
+                </mat-form-field>
+
+                <!-- MultiSelectAttribute -->
+                <mat-select class="w-full p-2 border rounded-md bg-white flex h-[40px]"
+                    *ngIf="attributeForm.attribute.type == productAttributeTypes.multiselect"
+                    [(ngModel)]="attributeForm.value" placeholder="Select" multiple>
+                    <input [(ngModel)]="AF_MS_searchQuery" class="p-3 border-b w-full mb-2 sticky top-0 bg-white z-50"
+                        placeholder="Search...">
+                    <mat-option *ngFor="let option of attributeForm.attribute.options | search:'':AF_MS_searchQuery"
+                        [value]="option">
+                        {{option}}
+                    </mat-option>
+                </mat-select>
+
+                <!-- DropdownAttribute -->
+                <mat-select class="w-full p-2 border rounded-md bg-white flex h-[40px]"
+                    *ngIf="attributeForm.attribute.type == productAttributeTypes.dropdown"
+                    [(ngModel)]="attributeForm.value" placeholder="Select">
+                    <input [(ngModel)]="AF_SS_searchQuery" class="p-3 border-b w-full mb-2 sticky top-0 bg-white z-50"
+                        placeholder="Search...">
+                    <mat-option *ngFor="let option of attributeForm.attribute.options | search:'':AF_SS_searchQuery"
+                        [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+
+                <!-- MultilineAttribute -->
+                <mat-form-field class="w-full compact-input"
+                    *ngIf="attributeForm.attribute.type == productAttributeTypes.paragraph">
+                    <textarea matInput placeholder="Enter Description" cdkTextareaAutosize
+                        #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                        [(ngModel)]="attributeForm.value"></textarea>
+                </mat-form-field>
+
+                <!-- MediaAttribute -->
+
+                <!-- CompletenessAttribute -->
+            </div>
+        </div>
+    </div>
+</div>

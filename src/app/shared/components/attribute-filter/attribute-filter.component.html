@@ -1,0 +1,198 @@
+<!-- Main Panel Title-->
+<div class="flex mb-4 items-center" *ngIf="!isEditPanelOpen">
+    <div class="grow">
+        <span class="font-medium text-slate-500 text-[13px]" [ngClass]="titleClass">{{title}}</span>
+    </div>
+    <div *ngIf="filter.length <= 0">
+        <button class="flex items-center" (click)="addNewFilter()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <div *ngIf="filter.length > 0">
+        <button (click)="isExpanded = !isExpanded">
+            <mat-icon>{{ isExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
+    </div>
+</div>
+
+<!-- Expanded Panel -->
+<div *ngIf="!isEditPanelOpen && isExpanded">
+    <div class="" *ngFor="let filterBlock of filter; let isLast= last; let blockIndex= index">
+        <div class="border border-solid filter-clauses cursor-pointer"
+            *ngFor="let filterItem of filterBlock;let filterIndex=index">
+            <div class="flex items-center">
+                <div class="grow" (click)="openEditPanel(filterItem, blockIndex, filterIndex)">
+                    <span class="text-orange-400">{{filterItem.attribute.label}} </span>
+                    <span *ngIf="filterItem.operator">{{filterItem.operator.label}} </span>
+                    <span *ngIf="filterItem.value != undefined && filterItem.value != null">{{filterItem.value}} </span>
+                </div>
+                <button mat-button class="icon-button delete" (click)="deleteFilterItem(blockIndex, filterIndex)">
+                    <mat-icon svgIcon="mat_outline:delete_outline" class="p-[2px]"></mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="mt-2">
+            <button mat-button color="primary" class="link-button" (click)="addNewFilter(blockIndex)">AND</button>
+            <button mat-button color="primary" class="link-button" *ngIf="isLast" (click)="addNewFilter()">OR</button>
+        </div>
+
+        <p class="or-divider" *ngIf="!isLast">
+            <span>OR</span>
+        </p>
+    </div>
+</div>
+
+<!-- Form Panel -->
+<div *ngIf="isEditPanelOpen">
+    <div class="mb-[8px]">
+        <button mat-button class="panel-back-arrow" (click)="handleBackClick(filter)">
+            <mat-icon svgIcon="mat_outline:arrow_back"></mat-icon>
+        </button>
+    </div>
+
+    <div>
+        <div class="uppercase text-xs mb-1">Select Attribute</div>
+        <mat-form-field appearance="fill" class="w-full thin-form-control">
+            <mat-select [(ngModel)]="form.attribute" (selectionChange)="handleAttributeSelect()"
+                [compareWith]="compareAttribute" placeholder="Select Attribute">
+                <mat-select-trigger>
+                    <span class="custom">{{form.attribute?.label}}</span>
+                </mat-select-trigger>
+                <input [(ngModel)]="AF_AA_searchQuery" class="p-3 border-b w-full mb-2 sticky top-0 bg-white z-50"
+                    placeholder="Search...">
+                <mat-option *ngFor="let attribute of productAttributes | search:'label,type':AF_AA_searchQuery:'I'"
+                    [value]="attribute">
+                    <div class="flex items-center">
+                        <p class="mr-[8px]">{{ attribute?.label }}</p>
+                        <span class="text-slate-400">{{attribute?.type}}</span>
+                    </div>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <ng-container *ngIf="form.attribute !== ''">
+
+        <!-- Short Text -->
+        <ng-container *ngIf="[attribute_type.short_text].indexOf(form.attribute.type) != -1">
+            <mat-checkbox class="text-[13px] mb-[16px] w-full" color="primary" [(ngModel)]="form.filterByCharCount"
+                (change)="characterCountCheckboxChange(form.filterByCharCount)" #characterCountCheckbox>Character
+                count</mat-checkbox>
+        </ng-container>
+
+        <!-- Date -->
+        <ng-container *ngIf="[attribute_type.date].indexOf(form.attribute.type) != -1">
+            <mat-form-field appearance="fill" class="w-full thin-form-control">
+                <mat-select [(ngModel)]="form.dateFilterType" (selectionChange)="dateFilterTypeChange()"
+                    placeholder="Date type">
+                    <mat-option *ngFor="let option of dateFilterType" [value]="option" class="capitalize">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+
+
+        <mat-form-field appearance="fill" class="w-full thin-form-control">
+            <mat-select [(ngModel)]="form.operator" [compareWith]="compareOperator" placeholder="Select Operator">
+                <mat-option *ngFor="let option of operatorOptions" [value]="option">
+                    {{ option.label }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Short Text | URL | HTML -->
+        <ng-container
+            *ngIf="!(this.form.operator.value == 'exists' || this.form.operator.value == '!exists') && [attribute_type.short_text, attribute_type.url, attribute_type.html, attribute_type.completeness].indexOf(form.attribute.type) != -1">
+            <mat-form-field class="w-full thin-form-control">
+                <input matInput [(ngModel)]="form.value" placeholder="Enter Value" #input />
+            </mat-form-field>
+        </ng-container>
+
+        <!-- Decimal -->
+        <ng-container *ngIf="[attribute_type.decimal].indexOf(form.attribute.type) != -1">
+            <mat-form-field class="w-full thin-form-control">
+                <input matInput type="number" class="hide-number-spinner" [(ngModel)]="form.value"
+                    placeholder="Enter Decimal Value" #decimalInput />
+            </mat-form-field>
+        </ng-container>
+
+        <!-- Integer -->
+        <ng-container *ngIf="[attribute_type.integer].indexOf(form.attribute.type) != -1">
+            <mat-form-field class="w-full thin-form-control" [class.mat-form-field-invalid]="integerInput.hasError"
+                [class.no-error-spacing]="integerInput.hasError">
+                <input matInput type="number" class="hide-number-spinner"
+                    (blur)="isIntegerNumber(form.value, integerInput)" [(ngModel)]="form.value"
+                    placeholder="Enter Integer Value" #integerInput />
+            </mat-form-field>
+            <p class="text-sm color-error -mt-[5px] mb-[5px]" *ngIf="integerInput.hasError">
+                Invalid <strong>integer</strong> number
+            </p>
+        </ng-container>
+
+        <!-- Paragraph -->
+        <ng-container *ngIf="[attribute_type.paragraph].indexOf(form.attribute.type) != -1">
+            <mat-form-field class="w-full thin-form-control h-auto">
+                <textarea matInput placeholder="Enter Value" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="2" [(ngModel)]="form.value"></textarea>
+            </mat-form-field>
+        </ng-container>
+
+        <!-- Date  -->
+        <ng-container *ngIf="[attribute_type.date].indexOf(form.attribute.type) != -1">
+            <ng-container *ngIf="form.dateFilterType == 'custom date'">
+                <mat-checkbox class="text-[13px] mb-[16px] w-full" color="primary" [(ngModel)]="form.filterByTime"
+                    (change)="filterByTimeCheckboxChange(form.filterByTime)" #filterByTimeCheckbox>Filter by
+                    time</mat-checkbox>
+                <mat-form-field class="w-full thin-form-control">
+                    <mtx-datetimepicker #datetimePicker [type]="form.filterByTime ? 'datetime' : 'date'" [mode]="'auto'"
+                        [twelvehour]="true" [timeInput]="form.filterByTime"></mtx-datetimepicker>
+                    <input [mtxDatetimepicker]="datetimePicker" [(ngModel)]="form.value" matInput>
+                    <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
+                </mat-form-field>
+            </ng-container>
+            <ng-container *ngIf="form.dateFilterType == 'relative date'">
+                <mat-form-field class="w-full thin-form-control"
+                    [class.mat-form-field-invalid]="integerDayInput.hasError"
+                    [class.no-error-spacing]="integerDayInput.hasError">
+                    <span matPrefix class="text-sm">Last</span>
+                    <input matInput type="number" class="hide-number-spinner pr-[10px] min-w-0"
+                        (blur)="isPositiveIntegerNumber(form.value, integerDayInput)" [(ngModel)]="form.value"
+                        placeholder="Enter Day" #integerDayInput />
+                    <span matPostfix class="text-xs whitespace-nowrap">Days <span class="text-slate-400">(UTC
+                            time)</span></span>
+                </mat-form-field>
+                <p class="text-sm color-error -mt-[5px] mb-[5px]" *ngIf="integerDayInput.hasError">
+                    Enter <strong>Positive and Integer</strong> number
+                </p>
+            </ng-container>
+        </ng-container>
+
+
+        <!-- Dropdown | Boolean -->
+        <ng-container *ngIf="[attribute_type.dropdown, attribute_type.boolean].indexOf(form.attribute.type) != -1">
+            <mat-form-field class="w-full thin-form-control">
+                <mat-select [(ngModel)]="form.value" placeholder="Select Value">
+                    <mat-option *ngFor="let option of form.attribute.settings?.options" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+
+        <!-- Multi Select -->
+        <ng-container *ngIf="[attribute_type.multiselect].indexOf(form.attribute.type) != -1">
+            <mat-form-field class="w-full thin-form-control">
+                <mat-select [(ngModel)]="form.value" placeholder="Select Value" multiple>
+                    <mat-option *ngFor="let option of form.attribute.settings?.options" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+    </ng-container>
+    <button mat-raised-button color="primary" class="w-full text-sm" [disabled]="form.attribute === ''"
+        (click)="applyColumnFilter(true)">
+        Apply Filter
+    </button>
+</div>

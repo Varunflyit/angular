@@ -1,0 +1,87 @@
+<div class="category-container">
+    <span class="font-12px uppercase text-slate-500 font-medium mb-2 block">Action</span>
+    <div class="flex items-center mb-[16px] font-12px">
+        <mat-select class="p-2 border rounded-md mr-[24px] flex h-[40px] w-[270px] bg-white"
+            [(ngModel)]="categoryForm.action" placeholder="Select Action">
+            <mat-option [value]="option" *ngFor="let option of actionDropdownOptions">
+                {{option.label}}
+            </mat-option>
+        </mat-select>
+        <span class="text-slate-600">{{categoryForm.action.title}}</span>
+    </div>
+
+    <div class="content-container">
+        <div class="tree-view-container">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="font-16px text-slate-500 font-medium block">Available Categories</h3>
+                <span class="font-12px text-primary-500 cursor-pointer font-medium block"
+                    (click)="treeControl.collapseAll()">Collapse all
+                    groups</span>
+            </div>
+            <mat-form-field class="search-input">
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput class="p-0" placeholder="Search By Name" #input />
+                <mat-icon matPostfix *ngIf="input.value != ''" class="cursor-pointer"
+                    (click)="input.value = '';">close</mat-icon>
+            </mat-form-field>
+
+            <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                    <mat-checkbox [checked]="checklistSelection.isSelected(node)"
+                        (change)="leafItemSelectionToggle(node)">{{node.name}}</mat-checkbox>
+                </mat-tree-node>
+
+
+                <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                    <div class="mat-tree-node">
+                        <button mat-icon-button matTreeNodeToggle>
+                            <mat-icon class="mat-icon-rtl-mirror">
+                                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                            </mat-icon>
+                        </button>
+                        <mat-checkbox [checked]="checklistSelection.isSelected(node)"
+                            (change)="selectionToggle(node)">{{node.name}}</mat-checkbox>
+                    </div>
+
+                    <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+                        <ng-container matTreeNodeOutlet></ng-container>
+                    </div>
+                </mat-nested-tree-node>
+            </mat-tree>
+
+        </div>
+        <div class="selected-category-container">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="font-16px text-slate-500 font-medium block">Selected Categories</h3>
+                <span class="font-12px text-primary-500 cursor-pointer font-medium block"
+                    (click)="clearAllSelection()">Clear All</span>
+            </div>
+            <ng-container *ngIf="categoryForm.selectedCategories.length > 0">
+                <div class="selected-category bg-slate-50"
+                    *ngFor="let item of categoryForm.selectedCategories; let i= index">
+                    <span class="selected-category-title">{{item[item.length - 1].name}}</span>
+                    <div class="selected-category-path text-slate-500">
+                        <span> / </span>
+                        <ng-container *ngFor="let category of item; let isLast= last; let isFirst= first">
+                            <ng-container *ngIf="!isLast">
+                                <span *ngIf="!isFirst"> > </span>
+                                <span>{{category.name}}</span>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <button mat-icon-button color="primary" class="selected-category-close-button" type="button"
+                        (click)="unSelectCategory(i)">
+                        <mat-icon svgIcon="mat_outline:close"></mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="categoryForm.selectedCategories.length <= 0">
+                <div class="no-category-selected-container">
+                    <mat-icon class="no-category-selected-icon text-primary-200"
+                        svgIcon="mat_outline:category"></mat-icon>
+                    <h3 class="no-category-selected-title">Choose categories from the left panel</h3>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

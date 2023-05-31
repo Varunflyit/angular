@@ -1,0 +1,82 @@
+<div *ngIf="showProductTable == false">
+    <div class="mb-[16px]">
+        <span class="font-12px uppercase text-slate-500 font-medium mb-2 block">Action</span>
+        <mat-select class=" p-2 border rounded-md mr-[24px] w-[270px] bg-white font-12px flex h-[40px]"
+            [(ngModel)]="relationshipForm.action" placeholder="Select Action">
+            <mat-option value="add">
+                Add
+            </mat-option>
+            <mat-option value="remove">
+                Remove
+            </mat-option>
+        </mat-select>
+    </div>
+    <div class="mb-[16px] flex items-start">
+        <div>
+            <span class="font-12px uppercase text-slate-500 font-medium mb-2 block">Choose Relationship</span>
+            <mat-select class=" p-2 border rounded-md w-[456px] bg-white font-12px flex h-[40px]"
+                [(ngModel)]="relationshipForm.relationship" placeholder="Select Action">
+                <mat-option value="printers">Printers</mat-option>
+                <mat-option value="related_items">Related Items</mat-option>
+                <mat-option value="test">Test</mat-option>
+                <mat-option value="test relationship">Test Relationship</mat-option>
+            </mat-select>
+        </div>
+        <div class="ml-4" *ngIf="relationshipForm.action == 'add'">
+            <span class="font-12px uppercase text-slate-500 font-medium mb-2 block">Quantity</span>
+            <mat-form-field class="w-[150px] compact-input">
+                <input matInput type="number" [(ngModel)]="relationshipForm.quantity" />
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+
+
+<!-- Product Table -->
+<div *ngIf="showProductTable == true">
+    <div class="flex items-center justify-between mb-2">
+        <div class="grow-1">
+            <p class="uppercase font-12px font-normal text-accent-400">Add Sku to Relationship</p>
+            <span class="font-12px font-medium">{{relationshipForm.relationship}}</span>
+        </div>
+        <mat-form-field class="search-input">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput class="p-0" (keyup)="applyFilter(input.value)" placeholder="Search by sku or label"
+                #input />
+            <mat-icon matPostfix *ngIf="input.value != ''" class="cursor-pointer"
+                (click)="input.value = ''; applyFilter(input.value)">close</mat-icon>
+        </mat-form-field>
+    </div>
+    <div class="">
+        <div class="scrollable">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-0">
+                <ng-container matColumnDef="select" sticky>
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox color="primary" (change)="selection.toggle(row)"
+                            [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container [matColumnDef]="col" *ngFor="let col of columnsToBeDisplayed | slice: 1; let i = index"
+                    [sticky]="i < 2">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{ col }}
+                    </th>
+                    <td mat-cell *matCellDef="let elements; let i = index">
+                        <span class="status-chip whitespace-nowrap" [ngClass]="changeColor(elements[col])">
+                            {{ isImage(elements[col]) ? '' : elements[col] }}
+                        </span>
+                        <eco-image-preview *ngIf="isImage(elements[col])" [image]="elements[col]"></eco-image-preview>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnsToBeDisplayed;sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnsToBeDisplayed"></tr>
+            </table>
+        </div>
+        <div class="flex items-center justify-end">
+            <mat-paginator class="compact-paginator" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+</div>

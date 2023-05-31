@@ -1,0 +1,591 @@
+<div class="overflow-hidden m-6 rounded border-2 border-sm w-[100vw] relative">
+    <div class="flex items-center product-details">
+        <div class="product-side-menu bg-white p-6 border-r-2">
+            <div class="flex items-center pb-4 border-b-2 mb-4" *ngIf="changeCount > 0">
+                <span>
+                    {{changeCount}} <span *ngIf="changeCount == 1">Attribute change</span> <span
+                        *ngIf="changeCount > 1">Attributes changes</span>
+                </span>
+                <button mat-flat-button color="primary" (click)="saveProductDetails({ isAttribute: 1 })"
+                    class="flex items-center mat-primary min-h-0 h-[40px] text-[12px] product-button ml-auto">
+                    <span>Save Changes</span>
+                </button>
+            </div>
+            <div class="flex items-center">
+                <div class="flex items-center" (click)="redirectTo('/products')">
+                    <mat-icon class="icon-size-5 cursor-pointer color-disabled"
+                        [svgIcon]="'heroicons_solid:arrow-left'"></mat-icon>
+                    <span class="pl-2 color-neutral cursor-pointer">
+                        All Product
+                    </span>
+                </div>
+                <div class="flex items-center ml-auto">
+                    <svg *ngIf="productDetails.previous" (click)="redirectTo('/products/' + productDetails.previous)"
+                        class="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 20 20">
+                        <path fill="#64748B" fill-rule="evenodd"
+                            d="M12.707 5.293a1 1 0 0 1 0 1.414L9.414 10l3.293 3.293a1 1 0 0 1-1.414 1.414l-4-4a1 1 0 0 1 0-1.414l4-4a1 1 0 0 1 1.414 0Z"
+                            clip-rule="evenodd" />
+                        <title>Previous Product</title>
+                    </svg>
+                    <svg *ngIf="productDetails.next" (click)="redirectTo('/products/' + productDetails.next)"
+                        class="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 20 20">
+                        <path fill="#64748B" fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 0 1 0-1.414L10.586 10L7.293 6.707a1 1 0 0 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0Z"
+                            clip-rule="evenodd" />
+                        <title>Next Product</title>
+                    </svg>
+                </div>
+                <div class="ml-3 flex items-center product-options">
+                    <mat-icon class="icon-size-5 cursor-pointer" (click)=productOptions.open()
+                        [svgIcon]="'heroicons_solid:dots-horizontal'"></mat-icon>
+                    <mat-select #productOptions>
+                        <mat-option value="" class="border-b-2" (click)="openDrawer()">Export</mat-option>
+                        <!-- <mat-option class="border-b-2" value="1">Import</mat-option> -->
+                        <mat-option class="color-error" value="2" (click)="openDeleteModal()">Delete</mat-option>
+                    </mat-select>
+                </div>
+            </div>
+            <div class="pt-4 pb-4">
+                <div class="cursor-pointer border-icon flex items-center justify-center p-6"
+                    (click)="profileImage.click()">
+                    <img *ngIf="productDetails['sys.main_image']" [src]="productDetails['sys.main_image'] || ''"
+                        alt="image">
+                    <div *ngIf="!productDetails['sys.main_image']" class="font-16px flex items-center justify-center">
+                        +
+                    </div>
+                    <input #profileImage type="file" (change)="saveImage($event, -1)" class="hidden" />
+                </div>
+            </div>
+            <div class="color-neutral font-medium text-[18px]">
+                <span *ngIf="false" class="cursor-pointer"
+                    (click)="resetEditMode();productDetails.isNameEditable = true;autoFocus()">{{productDetails['sys.name']}}</span>
+                <mat-form-field class="flex-1 w-full" *ngIf="true">
+                    <textarea class="my-0 min-h-[46px] pt-2 text-name" matInput [(ngModel)]="productDetails['sys.name']"
+                        (keydown)="restrictNewLine($event)" (keydown.enter)="saveProductDetails({isName: 1})" #nameInput
+                        (focusout)="
+                        productDetails.isNameEditable=false"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="pb-4" [ngClass]="{'pt-2': !productDetails.isNameEditable}">
+                <div>
+                    <!-- <mat-icon class="badge-success icon-size-5" [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                    <span class="cursor-pointer" (click)="statusOptions.open()">
+                        {{productDetails['sys.status']}}
+                    </span> -->
+                    <mat-select #statusOptions [(ngModel)]="productDetails['sys.status']"
+                        (ngModelChange)="saveProductDetails({isStatus: 1})"
+                        class="bg-white border border-gray-300 flex h-[40px] mat-select mr-[5px] p-2 rounded-md">
+                        <mat-option [value]="status" *ngFor="let status of productStatus">
+                            {{status}}
+                        </mat-option>
+                    </mat-select>
+                </div>
+            </div>
+            <div class="flex sku items-center">
+                <span class="pr-4">
+                    SKU
+                </span>
+                <span class="badge badge-secondary-border border font-12px cursor-pointer" *ngIf="false"
+                    (click)="resetEditMode();productDetails.isSkuEditable = true;autoFocus()">
+                    {{productDetails['sys.sku']}}
+                </span>
+                <mat-form-field class="flex-1 w-full" *ngIf="true">
+                    <input matInput class="p-0" #skuInput (focusout)="productDetails.isSkuEditable=false"
+                        [(ngModel)]="productDetails['sys.sku']" (keypress)="numberOnly($event)"
+                        (keydown.enter)="saveProductDetails({isSku: 1})" />
+                </mat-form-field>
+            </div>
+            <div class="flex sku pt-4 items-center">
+                <span class="gtin">
+                    GTIN
+                </span>
+                <span class="badge badge-secondary-border border font-12px cursor-pointer" *ngIf="false"
+                    (click)="resetEditMode();productDetails.isGtinEditable = true;autoFocus()">
+                    {{productDetails['sys.gtin']}}
+                </span>
+                <mat-form-field class="flex-1 w-full" *ngIf="true">
+                    <input matInput class="p-0" #ginInput (focusout)="productDetails.isGtinEditable=false"
+                        [(ngModel)]="productDetails['sys.gtin']" (keypress)="numberOnly($event)"
+                        (keydown.enter)="saveProductDetails({isGtin: 1})" />
+                </mat-form-field>
+            </div>
+            <div class="absolute bottom-0 dates">
+                <div class="bg-white flex border-2 rounded p-2 mb-2 font-12px">
+                    <div class="pr-2 container">
+                        <span>
+                            <img class="w-10 h-10 rounded-full" *ngIf="showAvatar && user.avatar"
+                                [src]="user?.avatar" />
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full text-primary-900 bg-primary-100"
+                                *ngIf="!showAvatar || !user.avatar">
+                                <span>{{ user?.name | getInitials }}</span>
+                            </div>
+                        </span>
+                    </div>
+                    <div>
+                        <p class="opacity-50">CREATED</p>
+                        <p class="color-disabled">{{productDetails['sys.created_at'] | date: 'dd-MM-yy h:mm:ss a'}}</p>
+                    </div>
+                </div>
+                <div class="bg-white flex border-2 rounded p-2 mb-6 font-12px">
+                    <div class="pr-2 container">
+                        <span>
+                            <img class="w-10 h-10 rounded-full" *ngIf="showAvatar && user.avatar"
+                                [src]="user?.avatar" />
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full text-primary-900 bg-primary-100"
+                                *ngIf="!showAvatar || !user.avatar">
+                                <span>{{ user?.name | getInitials }}</span>
+                            </div>
+                        </span>
+                    </div>
+                    <div>
+                        <p class="opacity-50">MODIFIED</p>
+                        <p class="color-disabled">{{productDetails['sys.updated_at'] | date: 'dd-MM-yy h:mm:ss a'}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product-content" [ngClass]="{'flex': isCompleteness}">
+            <div class="pl-6 pr-6" [ngClass]="{'w-full-300 border-r-2': isCompleteness}">
+                <nav class="border-b-2 tabs flex flex-col sm:flex-row">
+                    <button *ngFor="let tab of tabOptions" (click)="selectedTab = tab"
+                        class="tab py-4 px-6 block hover:text-primary-500 focus:outline-none" [ngClass]="{
+                            'active text-primary-600 border-b-2 border-primary-600': selectedTab && selectedTab.code === tab.code,
+                            'text-gray-500': !(selectedTab && selectedTab.code === tab.code)
+                        }">
+                        {{tab.label}}
+                    </button>
+                </nav>
+                <ng-container *ngIf="selectedTab.code == 'attributes'">
+                    <div class="flex items-center justify-between pt-4 pb-4">
+                        <div class="flex">
+                            <div class="pr-4 border-r-2 flex items-end">
+                                <mat-slide-toggle [color]="'primary'" [(ngModel)]="isHideEmpty"></mat-slide-toggle>
+                                <span class="pl-4">Hide empty</span>
+                            </div>
+                            <div class="pl-4 flex items-end">
+                                <mat-slide-toggle [color]="'primary'" [(ngModel)]="isCompleteness"></mat-slide-toggle>
+                                <span class="pl-4">Show completeness</span>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <svg (click)="selectedLayoutArray.length= 1" class="mr-2 cursor-pointer"
+                                xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                                fill="none">
+                                <rect width="32" height="32" rx="6"
+                                    [attr.fill]="selectedLayoutArray.length == 1 ? '#4F46E5' : '#E0E7FF'" />
+                                <path
+                                    d="M19.024 7C23.9452 7 25 8.05476 25 12.976L25 19.024C25 23.9452 23.9452 25 19.024 25L12.976 25C8.0548 25 7 23.9452 7 19.024L7 12.976C7 8.05476 8.0548 7 12.976 7L19.024 7Z"
+                                    [attr.stroke]="selectedLayoutArray.length == 1 ? '#E0E7FF' : '#64748B'"
+                                    stroke-width="2" />
+                                <path d="M25 16L7 16"
+                                    [attr.stroke]="selectedLayoutArray.length == 1 ? '#E0E7FF' : '#64748B'"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <svg (click)="selectedLayoutArray.push('is_right_side_attribute');selectedLayoutArray.length = 2"
+                                class="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                viewBox="0 0 32 32" fill="none">
+                                <rect width="32" height="32" rx="6"
+                                    [attr.fill]="selectedLayoutArray.length == 2 ? '#4F46E5' : '#E0E7FF'" />
+                                <path
+                                    d="M7 12.976C7 8.05476 8.05476 7 12.976 7H19.024C23.9452 7 25 8.05476 25 12.976V19.024C25 23.9452 23.9452 25 19.024 25H12.976C8.05476 25 7 23.9452 7 19.024V12.976Z"
+                                    [attr.stroke]="selectedLayoutArray.length == 2 ? '#E0E7FF' : '#64748B'"
+                                    stroke-width="2" />
+                                <path d="M16 7V25"
+                                    [attr.stroke]="selectedLayoutArray.length == 2 ? '#E0E7FF' : '#64748B'"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M25 16H7"
+                                    [attr.stroke]="selectedLayoutArray.length == 2 ? '#E0E7FF' : '#64748B'"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bg-white border-2 h-full rounded">
+                        <div [ngClass]="{
+                            'flex': selectedLayoutArray.length == 2
+                        }">
+                            <div *ngFor="let layout of selectedLayoutArray;let layoutIndex = index"
+                                class="justify-between p-5 border-b-2" [ngClass]="{
+                                    'w-1/2': selectedLayoutArray.length == 2,
+                                    'border-r': (layout=='is_left_side_attribute' && selectedLayoutArray.length == 2),
+                                    'border-l': layout=='is_right_side_attribute' && (selectedLayoutArray.length == 2),
+                                    'flex': !(isCompleteness && selectedLayoutArray.length === 2)
+                                }">
+                                <div>
+                                    <h3 class="text-3xl font-bold">Attributes Group</h3>
+                                    <div class="max-w-[272px] w-full mr-2.5">
+                                        <div class="absolute h-full left-0 top-0 w-full z-10"
+                                            (click)="customAttributeDropdown[layout].isOpen=false"
+                                            *ngIf="customAttributeDropdown[layout].isOpen"></div>
+                                        <div (click)="customAttributeDropdown[layout].isOpen=true"
+                                            class="border-2 cursor-pointer flex items-center justify-between p-1 pl-2 rounded relative w-full">
+                                            <span>
+                                                {{customAttributeDropdown[layout].selectedGroupName}}
+                                            </span>
+                                            <mat-icon>
+                                                arrow_drop_down
+                                            </mat-icon>
+                                            <div *ngIf="customAttributeDropdown[layout].isOpen"
+                                                class="absolute bg-white border-2 custom-attribute-dropdown p-3 rounded w-[270px] z-10">
+                                                <div class="pb-4 flex items-end hidden">
+                                                    <mat-slide-toggle [color]="'primary'"
+                                                        [(ngModel)]="customAttributeDropdown[layout].isHide"></mat-slide-toggle>
+                                                    <span class="pl-4">Hide empty groups</span>
+                                                </div>
+                                                <div class="flex pb-4">
+                                                    <mat-form-field
+                                                        class="flex-1 search-attribute-input search-product-details">
+                                                        <mat-icon matPrefix>search</mat-icon>
+                                                        <input matInput class="p-0"
+                                                            [(ngModel)]="customAttributeDropdown[layout].search"
+                                                            (ngModelChange)="searchAttributeWithGroup(layout)"
+                                                            placeholder="Search group" #input />
+                                                        <mat-icon matPostfix *ngIf="input.value != ''"
+                                                            class="cursor-pointer" (click)="
+                                                            customAttributeDropdown[layout].search='';
+                                                            searchAttributeWithGroup(layout)
+                                                            ">close</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="relative p-2 rounded attribute-group cursor-pointer"
+                                                    [ngClass]="{
+                                                        'bg-gray-100': customAttributeDropdown[layout].selectedGroupId==-1
+                                                    }" (click)="
+                                                    customAttributeDropdown[layout].selectedGroupId=-1;
+                                                    customAttributeDropdown[layout].selectedGroupName='All custom attributes';
+                                                    filterAttributeWithGroup(layout, -1)
+                                                    ">
+                                                    <span class="absolute">
+                                                        {{attributesList.length}}
+                                                    </span>
+                                                    <span class="pl-6">
+                                                        All custom attributes
+                                                    </span>
+                                                </div>
+                                                <hr class="mt-1 mb-1">
+                                                <div class="overflow-auto h-44">
+                                                    <div *ngFor="let attributeGroup of attributeGroupsList;let groupIndex = index;"
+                                                        (click)="
+                                                        customAttributeDropdown[layout].selectedGroupId=attributeGroup.id;
+                                                        customAttributeDropdown[layout].selectedGroupName=attributeGroup.name;
+                                                        filterAttributeWithGroup(layout, groupIndex)
+                                                        ">
+                                                        <div *ngIf="
+                                                        attributeGroup[layout] &&
+                                                        (attributeGroup.attributes.length!=0 || !customAttributeDropdown[layout].isHide)
+                                                        " [ngClass]="{'bg-gray-100': customAttributeDropdown[layout].selectedGroupId==attributeGroup.id}"
+                                                            class="relative p-2 rounded attribute-group cursor-pointer">
+                                                            <span class="absolute">
+                                                                {{attributeGroup.attributes.length}}
+                                                            </span>
+                                                            <span class="pl-6">
+                                                                {{attributeGroup.name}}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-end products-display"
+                                    [ngClass]="{'pt-2': (isCompleteness && selectedLayoutArray.length == 2)}">
+                                    <mat-form-field class="flex-1 search-attribute-input search-product-details">
+                                        <mat-icon matPrefix>search</mat-icon>
+                                        <input matInput class="p-0" [(ngModel)]="search[layout]"
+                                            (ngModelChange)="handleFilterChange(layout)"
+                                            placeholder="Search SKU or Label" #input />
+                                        <mat-icon matPostfix *ngIf="input.value != ''" class="cursor-pointer"
+                                            (click)="search[layout]='';handleFilterChange(layout)">close</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="attribute-content" [ngClass]="{'flex': selectedLayoutArray.length == 2}">
+                            <div *ngFor="let layout of selectedLayoutArray;let layoutIndex = index"
+                                [ngClass]="{'w-1/2': selectedLayoutArray.length == 2}">
+                                <div *ngFor="let attribute of attributesList;let i = index;">
+                                    <ng-container *ngIf="attribute[layout] && hideAttribute(attribute)">
+                                        <div (click)="(selectedAttribute[layout] = (selectedAttribute[layout] > -1 ? -1 : i));setfocus(layout, i)"
+                                            class="attribute-item bg-white flex justify-between border-b h-[40px] items-center"
+                                            [ngClass]="{
+                                                'border-r': layout=='is_left_side_attribute' && (selectedLayoutArray.length == 2),
+                                                'border-l': layout=='is_right_side_attribute' && (selectedLayoutArray.length == 2)
+                                            }">
+                                            <div class="flex items-end">
+                                                <!-- <mat-icon class="left-1 absolute" *ngIf="selectedAttribute[layout] != i"
+                                                    [ngClass]="{'inline-block': selectedAttribute[layout] == i, 'hover': selectedAttribute[layout] != i}"
+                                                    svgIcon="mat_outline:edit"></mat-icon>
+                                                <mat-icon class="left-1 absolute" *ngIf="selectedAttribute[layout] == i"
+                                                    [ngClass]="{'inline-block': selectedAttribute[layout] == i, 'hover': selectedAttribute[layout] != i}"
+                                                    svgIcon="mat_outline:check"></mat-icon> -->
+                                                <span
+                                                    class="attribute-name font-semibold text-secondary">{{attribute.label}}</span>
+                                                <span *ngIf="attribute.isChange" class="color-neutral pl-4">
+                                                    Edited
+                                                </span>
+                                            </div>
+                                            <div class="hover ml-auto">
+                                                {{attributeTypes[attribute.type]}}
+                                            </div>
+                                            <mat-icon *ngIf="attribute.description" class="icon-size-5 ml-3"
+                                                [matTooltip]="attribute.description || 'No Description'"
+                                                [matTooltipPosition]="'above'"
+                                                svgIcon="heroicons_solid:question-mark-circle"></mat-icon>
+                                        </div>
+                                        <div class="attribute-item-value" [ngClass]="{
+                                                'border-r': layout=='is_left_side_attribute' && (selectedLayoutArray.length == 2),
+                                                'border-l': layout=='is_right_side_attribute' && (selectedLayoutArray.length == 2)
+                                            }">
+                                            <ng-container *ngIf="false">
+                                                <div class="flex">
+                                                    <span class="min-h-4"
+                                                        *ngIf="attribute.type == 'text' || attribute.type == 'url' || attribute.type == 'integer' || attribute.type == 'decimal'">
+                                                        {{attribute.value}}
+                                                    </span>
+                                                    <span *ngIf="attribute.type == 'paragraph'">
+                                                        {{attribute.value}}
+                                                    </span>
+                                                    <span class="h-4" *ngIf="attribute.type == 'date'">
+                                                        {{attribute.value | date}}
+                                                    </span>
+                                                    <span class="h-4"
+                                                        *ngIf="attribute.type == 'dropdown' || attribute.type == 'multiselect'">
+                                                        {{attribute.optionValues}}
+                                                    </span>
+                                                    <span class="h-4" *ngIf="attribute.type == 'boolean'">
+                                                        {{(attribute.value == '1') ? 'True' : (attribute.value == '0' ?
+                                                        'False' : '')}}
+                                                    </span>
+                                                    <svg *ngIf="attribute.value && attribute.type=='url'"
+                                                        class="cursor-pointer" (click)="openLink(attribute.value)"
+                                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24">
+                                                        <path fill="none" stroke="#4f46e5" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="2"
+                                                            d="M10 5H8.2c-1.12 0-1.68 0-2.108.218a1.999 1.999 0 0 0-.874.874C5 6.52 5 7.08 5 8.2v7.6c0 1.12 0 1.68.218 2.108a2 2 0 0 0 .874.874c.427.218.987.218 2.105.218h7.606c1.118 0 1.677 0 2.104-.218c.377-.192.683-.498.875-.874c.218-.428.218-.987.218-2.105V14m1-5V4m0 0h-5m5 0l-7 7" />
+                                                    </svg>
+
+                                                    <div *ngIf="attribute.type == 'html'" [innerHTML]="attribute.value">
+                                                    </div>
+                                                    <div class="flex"
+                                                        *ngIf="attribute.type == 'media_single' || attribute.type == 'media_gallery'">
+                                                        <div *ngFor="let value of attribute.value"
+                                                            class="image-delete-overlay flex border-2 rounded media-image items-center justify-center mr-2 relative">
+                                                            <img class="image" [src]="value.original_url" alt="image">
+                                                            <div
+                                                                class="absolute cursor-pointer flex items-end justify-end media-image image-delete-bg opacity-50">
+                                                                <mat-icon [matTooltip]="'Open link in a new tab'"
+                                                                    (click)="openLink(value.original_url)"
+                                                                    [matTooltipPosition]="'below'"
+                                                                    svgIcon="heroicons_solid:external-link"
+                                                                    class="p-[2px]"></mat-icon>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'text'">
+                                                <mat-form-field class="w-full">
+                                                    <textarea class="min-h-10 my-0" id="attribute_type_{{layout}}_{{i}}"
+                                                        [(ngModel)]="attribute.value"
+                                                        (change)="attribute.isChange = true;reviewChanges()"
+                                                        style="margin: 11px 0 !important; padding: 0 !important"
+                                                        [rows]="1" matInput #message
+                                                        [maxlength]="attribute?.settings?.characterLimit"></textarea>
+                                                    <mat-hint class="mt-[7px]" align="start">
+                                                        {{message.value.length}} Characters
+                                                    </mat-hint>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'paragraph'">
+                                                <mat-form-field class="w-full">
+                                                    <textarea class="min-h-[76px] my-0"
+                                                        id="attribute_type_{{layout}}_{{i}}"
+                                                        [(ngModel)]="attribute.value"
+                                                        (change)="attribute.isChange = true;reviewChanges()"
+                                                        style="margin: 11px 0 !important; padding: 0 !important"
+                                                        [rows]="1" matInput #message></textarea>
+                                                    <mat-hint class="mt-[7px]" align="start">
+                                                        {{message.value.length}} Characters
+                                                    </mat-hint>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'dropdown'">
+                                                <mat-select class="p-2 border-2 rounded-md bg-white"
+                                                    [(ngModel)]="attribute.value"
+                                                    (ngModelChange)="attribute.isChange = true;reviewChanges();optionString(attribute?.settings?.options, attribute.value, i)">
+                                                    <mat-option
+                                                        *ngFor="let type of attribute.settings.options;let i=index"
+                                                        [value]="i">
+                                                        {{type}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'boolean'">
+                                                <mat-select class="p-2 border-2 rounded-md bg-white"
+                                                    [(ngModel)]="attribute.value"
+                                                    (ngModelChange)="attribute.isChange = true;reviewChanges()">
+                                                    <mat-option value="1">True</mat-option>
+                                                    <mat-option value="0">False</mat-option>
+                                                </mat-select>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'multiselect'">
+                                                <mat-select class="p-2 border-2 rounded-md bg-white" multiple
+                                                    [(ngModel)]="attribute.value"
+                                                    (ngModelChange)="attribute.isChange = true;reviewChanges();optionString(attribute?.settings?.options, attribute.value, i)">
+                                                    <mat-option
+                                                        *ngFor="let type of attribute?.settings?.options;let i=index"
+                                                        [value]="i">
+                                                        {{type}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'integer'">
+                                                <mat-form-field class="flex-1 w-full">
+                                                    <input matInput type="text" class="p-0" #input
+                                                        (change)="attribute.isChange = true;reviewChanges()"
+                                                        [(ngModel)]="attribute.value" (keypress)="numberOnly($event)" />
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'decimal'">
+                                                <mat-form-field class="flex-1 w-full">
+                                                    <input matInput type="number" class="p-0" #input
+                                                        (change)="attribute.isChange = true;reviewChanges()"
+                                                        [(ngModel)]="attribute.value" />
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'html'">
+                                                <quill-editor class="w-full"
+                                                    (onContentChanged)="attribute.isChange = true;reviewChanges()"
+                                                    [(ngModel)]="attribute.value"></quill-editor>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'date'">
+                                                <mat-form-field
+                                                    class="fuse-mat-dense fuse-mat-no-subscript min-w-32 w-full">
+                                                    <input matInput type="text" [placeholder]="'Please enter date'"
+                                                        [matDatepicker]="picker" [(ngModel)]="attribute.value"
+                                                        (dateInput)="attribute.isChange = true;reviewChanges();onSelectDate($event.value, i)"
+                                                        (click)="picker.open()" />
+                                                    <mat-datepicker-toggle matIconSuffix [for]="picker">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker></mat-datepicker>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="attribute.type == 'url'">
+                                                <mat-form-field class="w-full url-text-area">
+                                                    <textarea class="my-0" id="attribute_type_{{i}}"
+                                                        [(ngModel)]="attribute.value"
+                                                        (change)="attribute.isChange = true;reviewChanges()"
+                                                        style="margin: 11px 15px 11px 0 !important; padding: 0 !important"
+                                                        [rows]="1" matInput #message>
+                                                    </textarea>
+                                                    <svg [matTooltip]="!validURL(attribute.value) ? '' : 'Open link in a new tab'"
+                                                        (click)="openLink(attribute.value)"
+                                                        [matTooltipPosition]="'above'" class="cursor-pointer"
+                                                        xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                        viewBox="0 0 20 20">
+                                                        <g transform="rotate(45 10 10)">
+                                                            <path fill="currentColor" fill-rule="evenodd"
+                                                                d="M12.586 4.586a2 2 0 1 1 2.828 2.828l-3 3a2 2 0 0 1-2.828 0a1 1 0 0 0-1.414 1.414a4 4 0 0 0 5.656 0l3-3a4 4 0 0 0-5.656-5.656l-1.5 1.5a1 1 0 1 0 1.414 1.414l1.5-1.5Zm-5 5a2 2 0 0 1 2.828 0a1 1 0 1 0 1.414-1.414a4 4 0 0 0-5.656 0l-3 3a4 4 0 1 0 5.656 5.656l1.5-1.5a1 1 0 1 0-1.414-1.414l-1.5 1.5a2 2 0 1 1-2.828-2.828l3-3Z"
+                                                                clip-rule="evenodd"></path>
+                                                        </g>
+                                                    </svg>
+                                                </mat-form-field>
+                                                <div class="color-error" *ngIf="!validURL(attribute.value)">
+                                                    <span class="error">
+                                                        Not a valid URL. Use format: https://www.website.com or
+                                                        www.website.com
+                                                    </span>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container
+                                                *ngIf="(attribute.type == 'media_single' || attribute.type == 'media_gallery')">
+                                                <div class="flex">
+                                                    <div *ngFor="let value of attribute.value;let j=index"
+                                                        class="image-delete-overlay flex border-2 rounded media-image items-center justify-center cursor-pointer mr-2 relative">
+                                                        <img class="image" [src]="value.original_url" alt="image">
+                                                        <div (click)="removeMediaValue(j, i)"
+                                                            class="absolute bg-gray-200 cursor-pointer flex items-center justify-center media-image image-delete-bg opacity-50">
+                                                            <mat-icon svgIcon="mat_outline:delete_outline"
+                                                                class="p-[2px]"></mat-icon>
+                                                        </div>
+                                                    </div>
+                                                    <div (click)="fileInput.click()"
+                                                        *ngIf="(attribute.type == 'media_single' && attribute.value.length == 1) ? false : true"
+                                                        class="font-16px flex border-2 rounded media-image items-center justify-center cursor-pointer">
+                                                        +
+                                                    </div>
+                                                    <input #fileInput type="file" (change)="saveImage($event, i)"
+                                                        class="hidden" />
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                        <div *ngIf="((attributesList.length - 1) != i)" [ngClass]="{
+                                                'border-r': layout=='is_left_side_attribute' && (selectedLayoutArray.length == 2),
+                                                'border-l': layout=='is_right_side_attribute' && (selectedLayoutArray.length == 2)
+                                            }" class="border-t border-b h-1 seperator"></div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selectedTab.code != 'attributes'">
+                    <div class="pt-4">
+                        Coming Soon...
+                    </div>
+                </ng-container>
+            </div>
+            <div class="w-300 bg-white p-6 completeness-list"
+                [ngClass]="{'inline-block': isCompleteness, 'd-none': !isCompleteness}">
+                <h3 class="text-3xl font-bold p-0">Completeness</h3>
+                <div>
+                    <div class="border-2 p-4 rounded-2xl cursor-pointer mt-2"
+                        *ngFor="let completeness of completenessList;let i = index"
+                        (click)="selectedCompleteness==i ? selectedCompleteness=undefined : selectedCompleteness=i">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="15" viewBox="0 0 19 15"
+                                fill="none">
+                                <path
+                                    d="M14.63 1.34C14.27 0.83 13.67 0.5 13 0.5L2 0.51C0.9 0.51 0 1.4 0 2.5V12.5C0 13.6 0.9 14.49 2 14.49L13 14.5C13.67 14.5 14.27 14.17 14.63 13.66L19 7.5L14.63 1.34ZM13 12.5H2V2.5H13L16.55 7.5L13 12.5Z"
+                                    [attr.fill]="selectedCompleteness == i ? '#4f46e5' : '#CBD5E1'" />
+                            </svg>
+                            <span class="pl-2">
+                                {{completeness.name}}
+                            </span>
+                        </div>
+                        <div class="flex items-center pt-2">
+                            <mat-progress-bar [mode]="mode" [value]="completeness.complete"></mat-progress-bar>
+                            <span class="pl-4 text-gray-500">{{completeness.complete}}%</span>
+                        </div>
+                        <div *ngIf="selectedCompleteness==i">
+                            <p class="flex items-end uppercase relative completeness-attribute"
+                                *ngFor="let attribute of completeness.attributes | keyvalue">
+                                <mat-icon class="absolute color-neutral" *ngIf="attribute.value !=''"
+                                    svgIcon="mat_outline:check"></mat-icon>
+                                <span [ngClass]="{'color-neutral': attribute.value !='' }">
+                                    {{attribute.key}}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Table Columns Drawer -->
+<fuse-drawer class="w-[950px] max-w-full dark:bg-gray-900 shrink-0" *ngIf="isDrawerLoad"
+    [opened]="editColumnDrawerOpened" [position]="'right'" [mode]="'over'"
+    (openedChanged)="editColumnDrawerOpened = $event" #cruddrawer>
+    <ng-container *ngTemplateOutlet="editColumnsTemplate"></ng-container>
+</fuse-drawer>
+
+<ng-template #editColumnsTemplate>
+    <eco-product-export-modal *ngIf="editColumnDrawerOpened" [attribiteList]="productAttributeList"
+        [selectedAttributes]="selectedAttributes"
+        (onClose)="editColumnDrawerOpened = false;"></eco-product-export-modal>
+</ng-template>

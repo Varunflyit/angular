@@ -1,0 +1,20 @@
+.attribute-box {
+    padding: 10px 10px 16px 32px;
+    margin-bottom: 24px;
+}
+
+.compact-input {
+    ::ng-deep {
+        .mat-form-field-flex {
+            min-height: unset !important;
+        }
+
+        input.mat-input-element {
+            padding: 9px 0px !important;
+        }
+
+        textarea.mat-input-element {
+            margin: 9px 0px !important;
+        }
+    }
+}

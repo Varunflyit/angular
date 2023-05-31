@@ -1,0 +1,33 @@
+<div>
+    <div class="mb-[16px]">
+        <span class="font-12px uppercase text-slate-500 font-medium mb-2 block">attribute</span>
+        <mat-select class=" p-2 border rounded-md mr-[24px] w-[432px] bg-white font-12px flex h-[40px]"
+            [(ngModel)]="findReplaceForm.attribute" (ngModelChange)="findReplaceForm.value = null;"
+            placeholder="Select Attribute">
+            <input [(ngModel)]="FR_AT_searchQuery" class="p-3 border-b w-full mb-2 sticky top-0 bg-white z-50"
+                placeholder="Search...">
+            <mat-option [value]="attribute" *ngFor="let attribute of attributeList | search:'column':FR_AT_searchQuery">
+                {{attribute.column}} <ng-container *ngIf="attribute.type">({{attribute.type}})</ng-container>
+            </mat-option>
+        </mat-select>
+    </div>
+    <div class="mb-[16px]">
+        <mat-checkbox color="primary" class="font-12px" [(ngModel)]="findReplaceForm.matchCase">
+            Match Case
+        </mat-checkbox>
+    </div>
+    <div class="mb-[16px]">
+        <span class="font-12px uppercase text-slate-500 font-medium mb-2 block">Find</span>
+        <mat-form-field class="w-full compact-input">
+            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                [(ngModel)]="findReplaceForm.findQuery"></textarea>
+        </mat-form-field>
+    </div>
+    <div class="mb-[16px]">
+        <span class="font-12px uppercase text-slate-500 font-medium mb-2 block">Replace</span>
+        <mat-form-field class="w-full compact-input">
+            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                [(ngModel)]="findReplaceForm.replaceQuery"></textarea>
+        </mat-form-field>
+    </div>
+</div>

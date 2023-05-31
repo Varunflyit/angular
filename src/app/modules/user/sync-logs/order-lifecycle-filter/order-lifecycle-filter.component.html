@@ -1,0 +1,68 @@
+<!-- Main Panel Title-->
+<div class="flex mb-2 items-center" *ngIf="!isEditPanelOpen">
+    <div class="grow">
+        <span class="font-medium text-slate-500 text-[13px]">Sync Lifecycle</span>
+    </div>
+    <div *ngIf="filter.length <= 0">
+        <button (click)="addNewFilter()" class="flex items-center">
+            <span>
+                <mat-icon>add</mat-icon>
+            </span>
+        </button>
+    </div>
+    <div *ngIf="filter.length > 0">
+        <button (click)="isExpanded = !isExpanded">
+            <span>
+                <mat-icon>{{ isExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </span>
+        </button>
+    </div>
+</div>
+
+<div *ngIf="!isEditPanelOpen && isExpanded">
+    <div class="" *ngFor="let filterBlock of filter; let isLast= last; let blockIndex= index">
+        <div class="border border-solid filter-clauses cursor-pointer"
+            *ngFor="let filterItem of filterBlock;let filterIndex=index">
+            <div class="flex items-center">
+                <div class="grow" (click)="openEditPanel(filterItem, blockIndex, filterIndex)">
+                    <span class="text-orange-400">{{filterItem.attribute}} </span>
+                    <span *ngIf="filterItem.operator">{{filterItem.operator.label}} </span>
+                    <span *ngIf="filterItem.value">{{filterItem.value}} </span>
+                </div>
+                <button mat-button class="icon-button delete" (click)="deleteFilterItem(blockIndex, filterIndex)">
+                    <mat-icon svgIcon="mat_outline:delete_outline"></mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="mt-2">
+            <button mat-button color="primary" class="link-button" (click)="addNewFilter(blockIndex)">AND</button>
+            <button mat-button color="primary" class="link-button" *ngIf="isLast" (click)="addNewFilter()">OR</button>
+        </div>
+
+        <p class="or-divider" *ngIf="!isLast">
+            <span>OR</span>
+        </p>
+    </div>
+</div>
+
+<!-- Form Panel -->
+<div *ngIf="isEditPanelOpen">
+    <div class="mb-[8px]">
+        <button mat-button class="panel-back-arrow" (click)="closePanel()">
+            <mat-icon svgIcon="mat_outline:arrow_back"></mat-icon>
+        </button>
+    </div>
+
+    <mat-form-field appearance="fill"
+        class="fuse-mat-dense w-full thin-form-control fuse-mat-no-subscript mr-2">
+        <mat-select [placeholder]="'Sync Lifecycle'" [(ngModel)]="lifecycle">
+            <mat-option value="awaitingDispatch">Awaiting Dispatch</mat-option>
+            <mat-option value="completed">Completed</mat-option>
+            <mat-option value="syncingtoSource">Syncing to Source</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="w-full" [disabled]="lifecycle === ''"
+        (click)="applyColumnFilter(true)" style="margin-top: 15px;">
+        Apply Filter
+    </button>
+</div>

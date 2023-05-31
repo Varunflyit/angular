@@ -1,0 +1,14 @@
+<div class="p-4 w-[500px]">
+    <h3 class="font-bold leading-5 pb-4 text-3xl">Delete product</h3>
+    <div class="flex justify-center p-5">You are about to delete 1 product.</div>
+    <div class="flex justify-end">
+        <button mat-flat-button (click)="closeDialog()"
+            class="flex items-center color-neutral min-h-0 h-[40px] text-[12px] mr-2 product-button">
+            Cancel
+        </button>
+        <button mat-flat-button color="primary" (click)="deleteProduct()"
+            class="flex items-center mat-primary min-h-0 h-[40px] text-[12px] mr-2 product-button">
+            Delete
+        </button>
+    </div>
+</div>

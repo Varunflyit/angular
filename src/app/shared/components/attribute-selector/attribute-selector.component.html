@@ -1,0 +1,103 @@
+<div class="flex drawer-content">
+    <div class="flex-1 border-r-2 pr-[12px]">
+        <div class="flex items-center justify-between mb-[16px]">
+            <h1 class="text-[13px] text-slate-700 leading-3 font-medium">{{leftTitle}}</h1>
+            <span class="text-primary text-[10px] cursor-pointer leading-3" (click)="collapseAllGroups()">Collapse
+                all groups</span>
+        </div>
+        <mat-form-field class="w-full height-40">
+            <mat-icon matPrefix>search</mat-icon>
+            <input name="searchgroup" matInput class="p-0" placeholder="Search by name" #searchAttr
+                (keydown)="searchAttribute(searchAttr.value)" />
+            <mat-icon matPostfix
+                *ngIf="searchAttr.value != '' && searchAttr.value != null && searchAttr.value != undefined"
+                class="cursor-pointer" (click)="searchAttr.value = '';clearSearchAttribute()">close</mat-icon>
+        </mat-form-field>
+        <div class="scrollable-attribute-container">
+            <mat-accordion multi class="divide-y" #attribiteTree="matAccordion">
+                <mat-expansion-panel *ngFor="let group of attributeGroups;let gi=index" [togglePosition]="'before'"
+                    #panel1 [hideToggle]="true" class="my-[0px] accordion-tree-view">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-checkbox (click)="$event.stopPropagation();"
+                                class="authorize-click mr-[0px] flex items-center" [checked]="group.allSelected"
+                                color="primary" [indeterminate]="isIntermediateSelected(gi)"
+                                (change)="selectAllAttribute($event.checked, gi)">
+                            </mat-checkbox>
+                            <button class="small-button authorize-click" mat-icon-button
+                                (click)="$event.stopPropagation();panel1.toggle();">
+                                <mat-icon *ngIf="!panel1.expanded"
+                                    svgIcon="mat_outline:keyboard_arrow_right"></mat-icon>
+                                <mat-icon *ngIf="panel1.expanded" svgIcon="mat_outline:keyboard_arrow_down"></mat-icon>
+                            </button>
+                            <span>{{group.name}}</span>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="flex flex-col">
+                        <mat-checkbox
+                            class="h-[33px] flex items-center ml-[12px] mb-[5px]  px-[15px] rounded-md bg-slate-100 full-width-checkbox text-[13px]"
+                            color="primary" *ngFor="let attribute of group.attributes; let i = index"
+                            (change)="onSelectAttribute(attribute, $event.checked)"
+                            [checked]="lodash.some(selectedAttributes, ['code', attribute.code])"
+                            [disabled]="non_closable_codes.includes(attribute.code)">{{attribute.label}}</mat-checkbox>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+
+    <div class="flex-1 pl-[12px]">
+        <div class="flex items-center justify-between mb-[16px]">
+            <div class="flex items-center">
+                <h1 class="text-[13px] text-slate-700 leading-3 font-medium">{{rightTitle}}</h1>
+            </div>
+            <span class="text-primary text-[10px] cursor-pointer leading-3" (click)="clearAllSelectedLabels()">Clear
+                All</span>
+        </div>
+        <mat-form-field class="w-full height-40">
+            <mat-icon matPrefix>search</mat-icon>
+            <input name="searchlabel" matInput class="p-0" placeholder="Search by name" #searchSelectedAttr
+                [(ngModel)]="selectedAttrQuery" />
+            <mat-icon matPostfix
+                *ngIf="selectedAttrQuery != '' && selectedAttrQuery != null && selectedAttrQuery != undefined"
+                class="cursor-pointer" (click)="selectedAttrQuery = ''">close</mat-icon>
+        </mat-form-field>
+        <ng-container
+            *ngFor="let attribute of selectedAttributes | slice:0:non_dragable_codes.length | search:'label':selectedAttrQuery:'I'">
+            <div
+                class="mb-[5px] pl-[5px] pr-[15px] py-[4px] rounded-md bg-slate-100 flex items-center justify-between text-[13px] cursor-grab column-toggler-item h-[33px]">
+                <div class="flex items-center">
+                    <span class="uppercase color-success mr-[8px] ml-[34px] font-medium"
+                        *ngIf="attribute?.attribute_type == attribute_Types.system">sys</span>
+                    <span class="uppercase color-success mr-[8px] font-medium"
+                        *ngIf="attribute?.attribute_type == attribute_Types.integration">int</span>
+                    <span class="uppercase color-success mr-[8px] font-medium"
+                        *ngIf="(attribute?.attribute_type != attribute_Types.integration) && attribute?.attribute_type != attribute_Types.system">att</span>
+                    <span>{{attribute.label}}</span>
+                </div>
+            </div>
+        </ng-container>
+        <div class="scrollable-attribute-container" cdkDropList (cdkDropListDropped)="handleDropColumn($event)">
+            <ng-container
+                *ngFor="let attribute of selectedAttributes | slice:non_dragable_codes.length | search:'label':selectedAttrQuery:'I'">
+                <div class="mb-[5px] pl-[5px] pr-[15px] py-[4px] rounded-md bg-slate-100 flex items-center justify-between text-[13px] cursor-grab column-toggler-item"
+                    cdkDrag cdkDragLockAxis="y" [cdkDragDisabled]="non_dragable_codes.includes(attribute.code)">
+                    <div class="flex items-center">
+                        <mat-icon svgIcon="mat_outline:drag_indicator" class="mr-[10px]"></mat-icon>
+                        <span class="uppercase color-success mr-[8px] font-medium"
+                            *ngIf="attribute?.attribute_type == attribute_Types.system">sys</span>
+                        <span class="uppercase color-success mr-[8px] font-medium"
+                            *ngIf="attribute?.attribute_type == attribute_Types.integration">int</span>
+                        <span class="uppercase color-success mr-[8px] font-medium"
+                            *ngIf="(attribute?.attribute_type != attribute_Types.integration) && attribute?.attribute_type != attribute_Types.system">att</span>
+                        <span>{{attribute.label}}</span>
+                    </div>
+                    <button mat-icon-button *ngIf="!non_closable_codes.includes(attribute.code)"
+                        class="small-button mr-0" (click)="unselectAttribute(attribute)">
+                        <mat-icon matPostfix class="cursor-pointer p-[4px]" svgIcon="mat_outline:close"></mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

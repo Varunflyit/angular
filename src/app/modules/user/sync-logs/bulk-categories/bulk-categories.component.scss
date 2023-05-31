@@ -1,0 +1,111 @@
+.content-container {
+    max-height: calc(100vh - 275px);
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+}
+
+.tree-view-container {
+    width: 434px;
+    padding-right: 16px;
+    border-right: 2px solid var(--fuse-border);
+}
+
+.selected-category-container {
+    flex: 1;
+    padding-left: 16px;
+}
+
+.selected-category {
+    border-radius: 3px;
+    padding: 8px;
+    margin-bottom: 4px;
+    min-height: 40px;
+    flex-wrap: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.selected-category-title {
+    flex: 1 1 34%;
+    font-size: 12px;
+}
+
+.selected-category-path {
+    flex: 2 2 34%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 12px;
+    padding-left: 12px;
+}
+
+.selected-category-close-button {
+    height: 24px !important;
+    min-height: auto !important;
+    width: 24px !important;
+    min-width: auto !important;
+}
+
+.search-input {
+    width: 100%;
+    font-size: 12px;
+    height: 40px;
+    border-width: 2px;
+
+    ::ng-deep {
+        .mat-form-field-wrapper {
+            height: 100%;
+        }
+
+        .mat-form-field-flex {
+            min-height: unset !important;
+            padding: 2px 8px !important;
+            height: 100%;
+        }
+
+        .mat-icon {
+            margin-right: 5px !important;
+        }
+    }
+}
+
+.example-tree .mat-nested-tree-node div[role=group] {
+    padding-left: 40px;
+}
+
+.example-tree div[role=group]>.mat-tree-node {
+    padding-left: 40px;
+    margin: 5px 0px;
+    border-radius: 5px;
+    @apply bg-slate-50;
+}
+
+.example-tree-invisible {
+    display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+.no-category-selected-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 48px;
+}
+
+.no-category-selected-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+.no-category-selected-title {
+    font-size: 16px;
+}

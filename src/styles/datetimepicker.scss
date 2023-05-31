@@ -1,0 +1,125 @@
+.mtx-time-input {
+    color: #000000de;
+    background-color: #0000001f
+}
+
+.mtx-time-input.mtx-time-input-active {
+    color: var(--fuse-primary);
+    background-color: rgba(var(--fuse-primary-rgb), 0.33);
+}
+
+.mtx-time-input.mtx-time-input-active:focus {
+    border-color: var(--fuse-primary);
+    background-color: #fafafa
+}
+
+.mtx-datetimepicker-content {
+    background-color: #fff;
+    color: #000000de;
+    box-shadow: 0 5px 5px -3px #0003, 0 8px 10px 1px #00000024, 0 3px 14px 2px #0000001f
+}
+
+.mtx-calendar-header {
+    background-color: var(--fuse-primary);
+    color: #fff
+}
+
+.mtx-calendar-body-label {
+    color: #0000008a
+}
+
+.mtx-calendar-table-header {
+    color: #00000061
+}
+
+.mtx-calendar-body-cell-content {
+    color: #000000de
+}
+
+.mtx-calendar-body-cell-content.mtx-calendar-body-selected {
+    background-color: var(--fuse-primary);
+    color: #fff
+}
+
+.mtx-calendar-body-cell-content.mtx-calendar-body-selected.mtx-calendar-body-today {
+    box-shadow: inset 0 0 0 1px #fff
+}
+
+.mtx-calendar-body-cell-content:not(.mtx-calendar-body-selected).mtx-calendar-body-today {
+    border-color: #00000061
+}
+
+.mtx-calendar-body-cell:not(.mtx-calendar-body-disabled):hover>.mtx-calendar-body-cell-content:not(.mtx-calendar-body-selected),
+.mtx-calendar-body-active>.mtx-calendar-body-cell-content:not(.mtx-calendar-body-selected) {
+    background-color: rgba(var(--fuse-primary-rgb), 0.77);
+    color: var(--fuse-on-primary);
+}
+
+.mtx-calendar-body-disabled>.mtx-calendar-body-cell-content:not(.mtx-calendar-body-selected) {
+    color: #00000061
+}
+
+.mtx-calendar-body-disabled>.mtx-calendar-body-today:not(.mtx-calendar-body-selected) {
+    border-color: #00000061
+}
+
+.mtx-calendar-body-disabled>.mtx-calendar-body-selected {
+    background-color: rgba(var(--fuse-primary-rgb), 0.66)
+}
+
+.mtx-calendar-previous-button.disabled,
+.mtx-calendar-next-button.disabled {
+    color: #00000061
+}
+
+.mtx-clock-wrapper {
+    background-color: #0000001f
+}
+
+.mtx-clock-center,
+.mtx-clock-hand {
+    background-color: var(--fuse-primary)
+}
+
+.mtx-clock-hand:before {
+    background-color: var(--fuse-primary)
+}
+
+.mtx-clock-cell {
+    color: #000000de
+}
+
+.mtx-clock-cell.mtx-clock-cell-selected {
+    background-color: var(--fuse-primary);
+    color: #fff
+}
+
+.mtx-clock-cell:not(.mtx-clock-cell-selected, .mtx-clock-cell-disabled):hover {
+    background-color: #0000000a
+}
+
+.mtx-clock-cell.mtx-clock-cell-disabled {
+    color: #00000061
+}
+
+.mtx-datetimepicker-toggle-active {
+    color: var(--fuse-primary)
+}
+
+.mtx-datetimepicker-toggle-active.mat-accent {
+    color: #ff4081
+}
+
+.mtx-datetimepicker-toggle-active.mat-warn {
+    color: #f44336
+}
+
+.mtx-time-ampm .mtx-time-am,
+.mtx-time-ampm .mtx-time-pm {
+    min-height: auto;
+}
+
+.mtx-time-ampm .mtx-time-am.mtx-time-ampm-active,
+.mtx-time-ampm .mtx-time-pm.mtx-time-ampm-active {
+    background-color: rgb(var(--fuse-primary-rgb), 0.33);
+}

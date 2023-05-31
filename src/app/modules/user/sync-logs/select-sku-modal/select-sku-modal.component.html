@@ -1,0 +1,65 @@
+<div class="border-b min-h-[76px] flex items-center justify-between px-[40px]">
+    <h2 mat-dialog-title class="text-ellipsis modal-title">Add SKUS to filter</h2>
+    <div class="flex items-center justify-center">
+        <button mat-stroked-button color="primary" class="cancel-button" (click)="closeDialog()">
+            Cancel
+        </button>
+        <button mat-raised-button color="primary" class="save-button">
+            Save
+        </button>
+    </div>
+</div>
+<div mat-dialog-content class="modal-body">
+    <div class="flex items-center justify-end">
+        <mat-slide-toggle class="mr-4 text-[12px]" color="primary" [ngModel]="showSelected">Only show
+            selected</mat-slide-toggle>
+        <mat-form-field class="search-input">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput class="p-0" (keyup)="applyFilter(input.value)" placeholder="Search by sku or label"
+                #input />
+            <mat-icon matPostfix *ngIf="input.value != ''" class="cursor-pointer"
+                (click)="input.value = ''; applyFilter(input.value)">close</mat-icon>
+        </mat-form-field>
+    </div>
+    <div class="">
+        <div class="scrollable">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-0">
+                <ng-container matColumnDef="select" sticky>
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container [matColumnDef]="col" *ngFor="let col of columnsToBeDisplayed | slice: 1; let i = index"
+                    [sticky]="i < 2">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{ col }}
+                    </th>
+                    <td mat-cell *matCellDef="let elements; let i = index">
+                        <span class="status-chip" [ngClass]="changeColor(elements[col])">
+                            {{ isImage(elements[col]) ? '' : elements[col] }}
+                        </span>
+                        <!-- <div class="image-container" *ngIf="isImage(elements[col])">
+                            <img [src]="elements[col]" class="cell-image" />
+                            <img [src]="elements[col]" class="enlarged-image" />
+                        </div> -->
+                        <eco-image-preview *ngIf="isImage(elements[col])" [image]="elements[col]"></eco-image-preview>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnsToBeDisplayed;sticky: true" class="light"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnsToBeDisplayed"></tr>
+            </table>
+        </div>
+        <div class="flex items-center justify-end">
+            <mat-paginator class="compact-paginator" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+</div>

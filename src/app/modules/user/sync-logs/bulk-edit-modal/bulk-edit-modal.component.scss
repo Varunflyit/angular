@@ -1,0 +1,89 @@
+.modal-title {
+    font-size: 20px;
+    letter-spacing: -.4px;
+    font-weight: 500;
+    line-height: 24px;
+    margin-bottom: 5px;
+}
+
+.sub-title {
+    font-size: 12px;
+    color: var(--fuse-accent-400);
+}
+
+.cancel-button {
+    font-size: 12px !important;
+    border-color: var(--fuse-primary) !important;
+    border-width: 2px;
+}
+
+.save-button {
+    font-size: 12px !important;
+    margin-left: 16px;
+}
+
+.modal-body {
+    padding: 24px 16px;
+}
+
+.custom-button-group {
+    .mat-button-toggle-button {
+        span {
+            height: 100%;
+            display: flex;
+            align-items: center !important;
+        }
+    }
+
+    ::ng-deep {
+
+        .mat-button-toggle {
+
+            &:first-child {
+                border-left: none !important;
+            }
+
+            border-radius: 0px !important;
+            background-color: transparent !important;
+            margin: 0px !important;
+            border-left: 2px solid !important;
+            @apply border-slate-300 #{!important};
+
+            &.mat-button-toggle-checked {
+                background-color: var(--fuse-primary) !important;
+
+                @if variable-exists(--fuse-original) {
+                    background-color: var(--fuse-original) !important;
+                }
+
+                .mat-button-toggle-label-content {
+                    color: var(--fuse-on-primary) !important;
+                }
+            }
+
+            .mat-button-toggle-label-content {
+                font-size: 12px;
+            }
+        }
+    }
+
+    .mat-ripple {
+        border-radius: 0px !important;
+    }
+}
+
+.compact-input {
+    ::ng-deep {
+        .mat-form-field-flex {
+            min-height: unset !important;
+        }
+
+        input.mat-input-element {
+            padding: 9px 0px !important;
+        }
+
+        textarea.mat-input-element {
+            margin: 9px 0px !important;
+        }
+    }
+}

@@ -1,0 +1,43 @@
+<!-- Main Panel Title-->
+<div class="flex mb-4 items-center">
+    <div class="grow">
+        <span class="font-medium text-slate-500 text-[13px]">Groups</span>
+    </div>
+    <div class="flex items-center">
+        <button class="mt-[5px]" (click)="isExpanded = !isExpanded">
+            <mat-icon>{{ isExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
+    </div>
+</div>
+
+<!-- Expanded Panel -->
+<div *ngIf="isExpanded">
+    <div>
+        <div class="flex items-center justify-between mb-1">
+            <div class="uppercase text-xs">Select Group</div>
+            <button mat-button color="primary" *ngIf="form.group_id?.length > 0 || form.operator"
+                class="text-xs p-0 h-[20px] min-h-0 w-[40px] min-w-0" (click)="clearFilterByButton();">Clear</button>
+        </div>
+        <mat-form-field appearance="fill" class="w-full thin-form-control">
+            <mat-select [(ngModel)]="form.group_id" placeholder="Select Group" multiple>
+                <mat-option *ngFor="let option of groupList; let i = index" [value]="option.id">
+                    {{ option.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div *ngIf="form.group_id && form.group_id.length > 0">
+        <mat-form-field appearance="fill" class="w-full thin-form-control">
+            <mat-select [(ngModel)]="form.operator" placeholder="Select Operator">
+                <mat-option *ngFor="let option of operatorOptions" [value]="option.value">
+                    {{ option.label }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <button mat-raised-button color="primary" class="w-full font-12px" [disabled]="form.group_id.length <= 0"
+        (click)="applyColumnFilter()">
+        Apply Filter
+    </button>
+</div>

@@ -1,0 +1,40 @@
+<!-- Main Panel Title-->
+<div class="flex mb-2 items-center" *ngIf="!isEditPanelOpen">
+    <div class="grow">
+        <span class="font-medium text-slate-500 text-[13px]">Integration Instance</span>
+    </div>
+    <div *ngIf="filter.length <= 0">
+        <button (click)="addNewFilter()" class="flex items-center">
+            <span>
+                <mat-icon>add</mat-icon>
+            </span>
+        </button>
+    </div>
+    <div *ngIf="filter.length > 0">
+        <button (click)="isExpanded = !isExpanded">
+            <span>
+                <mat-icon>{{ isExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </span>
+        </button>
+    </div>
+</div>
+
+<!-- Form Panel -->
+<div *ngIf="isEditPanelOpen">
+    <div class="mb-[8px]">
+        <button mat-button class="panel-back-arrow" (click)="closePanel()">
+            <mat-icon svgIcon="mat_outline:arrow_back"></mat-icon>
+        </button>
+    </div>
+    <mat-form-field appearance="fill" class="w-full thin-form-control">
+        <mat-select [placeholder]="'Integration Instance'" [(ngModel)]="instance">
+            <mat-option *ngFor="let integration of tags" [value]="integration.id">
+                {{ integration.title }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="w-full" [disabled]="instance === ''"
+        (click)="applyColumnFilter(true)" style="margin-top: 15px;">
+        Apply Filter
+    </button>
+</div>

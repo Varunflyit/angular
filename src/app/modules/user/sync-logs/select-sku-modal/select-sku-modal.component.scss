@@ -1,0 +1,113 @@
+.modal-title {
+    font-size: 20px;
+    letter-spacing: -.4px;
+    font-weight: 500;
+    line-height: 24px;
+}
+
+.cancel-button {
+    font-size: 12px !important;
+    border-color: var(--fuse-primary) !important;
+    border-width: 2px;
+}
+
+.save-button {
+    font-size: 12px !important;
+    margin-left: 16px;
+}
+
+.modal-body {
+    padding: 24px 16px;
+}
+
+.search-input {
+    height: 32px !important;
+    width: 256px;
+    font-size: 12px;
+
+    ::ng-deep .mat-form-field-wrapper {
+        height: 100%;
+        width: 100%;
+    }
+
+    ::ng-deep .mat-form-field-flex {
+        min-height: unset !important;
+        min-width: unset !important;
+        height: 100%;
+        width: 100%;
+        padding: 2px 8px !important;
+        border-radius: 4px !important;
+
+        .mat-icon {
+            margin-right: 8px !important;
+        }
+    }
+}
+
+
+.scrollable {
+    height: calc(100vh - 205px);
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.mat-cell,
+.mat-header-cell {
+    word-wrap: initial;
+    display: table-cell;
+    padding: 0px 10px;
+    line-break: unset;
+    width: 100%;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.mat-row,
+.mat-header-row {
+    display: table-row;
+}
+
+.mat-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    display: table;
+    border-collapse: collapse;
+    margin: 0px;
+}
+
+.image-container {
+    position: relative;
+    width: fit-content;
+
+    .cell-image {
+        border: 1px solid transparent;
+        margin: 5px auto;
+        max-width: 40px;
+        max-height: 40px;
+        width: auto;
+        height: auto;
+
+        &:hover {
+            border-color: black;
+        }
+    }
+
+    &:hover .enlarged-image {
+        display: block;
+    }
+
+    .enlarged-image {
+        position: absolute;
+        max-width: 204px;
+        max-height: 204px;
+        width: auto;
+        height: auto;
+        z-index: 10;
+        top: 45px;
+        left: 0px;
+        display: none;
+    }
+
+
+}

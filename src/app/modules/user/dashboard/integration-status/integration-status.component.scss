@@ -1,0 +1,26 @@
+.dashboard-integration-status-grid {
+    padding-right: 0px !important;
+    grid-template-columns: repeat(3, 1fr);
+
+    @screen sm {
+        grid-template-columns: repeat(3, 1fr) 72px;
+    }
+
+    @screen md {
+        grid-template-columns: repeat(9, 1fr) 72px;
+    }
+
+    @screen lg {
+        grid-template-columns: 340px repeat(2, 6%) repeat(4, 1fr) repeat(3, 6%);
+    }
+}
+
+.integartion-list:nth-child(odd) {
+    background: white;
+    padding-right: 0px !important;
+}
+
+.integartion-list:nth-child(even) {
+    background: #f7f7fa;
+    padding-right: 0px !important;
+}

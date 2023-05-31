@@ -1,0 +1,245 @@
+.mtx-calendar {
+    display: block;
+    outline: none
+}
+
+.mtx-calendar-header {
+    box-sizing: border-box;
+    padding: 8px;
+    border-radius: 4px 4px 0 0
+}
+
+.mtx-calendar-header .mtx-calendar-header-year,
+.mtx-calendar-header .mtx-calendar-header-date,
+.mtx-calendar-header .mtx-calendar-header-hours,
+.mtx-calendar-header .mtx-calendar-header-minutes,
+.mtx-calendar-header .mtx-calendar-header-ampm {
+    height: auto;
+    max-height: none;
+    min-width: auto !important;
+    padding: 0 4px !important;
+    text-align: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: normal !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.mtx-calendar-header .mtx-calendar-header-year .mat-mdc-button-touch-target,
+.mtx-calendar-header .mtx-calendar-header-date .mat-mdc-button-touch-target,
+.mtx-calendar-header .mtx-calendar-header-hours .mat-mdc-button-touch-target,
+.mtx-calendar-header .mtx-calendar-header-minutes .mat-mdc-button-touch-target,
+.mtx-calendar-header .mtx-calendar-header-ampm .mat-mdc-button-touch-target {
+    height: 100%
+}
+
+.mtx-calendar-header .mtx-calendar-header-year {
+    line-height: 24px
+}
+
+.mtx-calendar-header-date-time {
+    font-size: 24px;
+    line-height: 36px
+}
+
+.mtx-calendar-header-year:not(.active),
+.mtx-calendar-header-date:not(.active),
+.mtx-calendar-header-hours:not(.active),
+.mtx-calendar-header-minutes:not(.active),
+.mtx-calendar-header-ampm:not(.active) {
+    opacity: .6
+}
+
+.mtx-calendar-header-year.not-clickable,
+.mtx-calendar-header-date.not-clickable,
+.mtx-calendar-header-hours.not-clickable,
+.mtx-calendar-header-minutes.not-clickable,
+.mtx-calendar-header-ampm.not-clickable {
+    cursor: initial
+}
+
+.mtx-calendar-header-time {
+    display: inline-flex
+}
+
+.mtx-calendar-header-time:not(.active) {
+    opacity: .6
+}
+
+.mtx-calendar-header-time:not(.active) .mtx-calendar-header-hours,
+.mtx-calendar-header-time:not(.active) .mtx-calendar-header-minutes,
+.mtx-calendar-header-time:not(.active) .mtx-calendar-header-ampm {
+    opacity: 1
+}
+
+.mtx-calendar-header-hour-minute-separator {
+    display: inline-block;
+    width: 8px;
+    text-align: center
+}
+
+.mtx-calendar-header-ampm-container {
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 18px;
+    font-size: 12px
+}
+
+[mode=landscape] .mtx-calendar {
+    display: flex
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header {
+    width: 144px;
+    min-width: 144px;
+    padding: 16px 8px;
+    border-radius: 4px 0 0 4px
+}
+
+[dir=rtl] [mode=landscape] .mtx-calendar .mtx-calendar-header {
+    border-radius: 0 4px 4px 0
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header-year+.mtx-calendar-header-date-time,
+[mode=landscape] .mtx-calendar .mtx-calendar-header-date+.mtx-calendar-header-time {
+    margin-top: 4px
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header-date-time {
+    font-size: 24px !important;
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header-time {
+    display: flex;
+    flex-direction: column
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header-time .mtx-calendar-header-hours,
+[mode=landscape] .mtx-calendar .mtx-calendar-header-time .mtx-calendar-header-minutes,
+[mode=landscape] .mtx-calendar .mtx-calendar-header-time .mtx-calendar-header-ampm {
+    width: 40px;
+    text-align: center
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header-ampm-container {
+    flex-direction: row;
+    font-size: 20px
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header-ampm {
+    padding: 4px
+}
+
+[mode=landscape] .mtx-calendar .mtx-calendar-header-ampm+.mtx-calendar-header-ampm {
+    margin: 0 8px
+}
+
+@media all and (orientation: landscape) {
+    [mode=auto] .mtx-calendar {
+        display: flex
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header {
+        width: 144px;
+        min-width: 144px;
+        padding: 16px 8px;
+        border-radius: 4px 0 0 4px
+    }
+
+    [dir=rtl] [mode=auto] .mtx-calendar .mtx-calendar-header {
+        border-radius: 0 4px 4px 0
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header-year+.mtx-calendar-header-date-time,
+    [mode=auto] .mtx-calendar .mtx-calendar-header-date+.mtx-calendar-header-time {
+        margin-top: 4px
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header-date-time {
+        font-size: 24px !important;
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header-time {
+        display: flex;
+        flex-direction: column
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header-time .mtx-calendar-header-hours,
+    [mode=auto] .mtx-calendar .mtx-calendar-header-time .mtx-calendar-header-minutes,
+    [mode=auto] .mtx-calendar .mtx-calendar-header-time .mtx-calendar-header-ampm {
+        width: 40px;
+        text-align: center
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header-ampm-container {
+        flex-direction: row;
+        font-size: 20px
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header-ampm {
+        padding: 4px
+    }
+
+    [mode=auto] .mtx-calendar .mtx-calendar-header-ampm+.mtx-calendar-header-ampm {
+        margin: 0 8px
+    }
+}
+
+.mtx-calendar-content {
+    width: 100%;
+    padding: 8px;
+    outline: none;
+    box-sizing: border-box;
+    overflow: hidden
+}
+
+.mtx-calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 calc(4.7142857143% - 16px)
+}
+
+.mtx-calendar-controls .mat-icon-button:hover .mat-button-focus-overlay {
+    opacity: .04
+}
+
+.mtx-calendar-period-button {
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    outline: none;
+    border: 0;
+    background: transparent;
+    box-sizing: border-box
+}
+
+.mtx-calendar-previous-button.disabled,
+.mtx-calendar-next-button.disabled {
+    pointer-events: none
+}
+
+.mtx-calendar-previous-button svg,
+.mtx-calendar-next-button svg {
+    fill: currentColor;
+    vertical-align: top
+}
+
+[dir=rtl] .mtx-calendar-previous-button svg,
+[dir=rtl] .mtx-calendar-next-button svg {
+    transform: rotate(180deg)
+}
+
+.mtx-calendar-table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%
+}
+
+.mtx-calendar-table-header th {
+    text-align: center;
+    padding: 8px 0
+}
